@@ -1,8 +1,32 @@
 # hw5-tester
 
-Tests for CS540 Spring 2021 HW5
+Tests for CS540 Spring 2021 HW5: Linear Regression 
 
 # The tester is still under development. There will be an announcement on Discord once a working version is released
+
+## Usage
+
+Download [test.py](test.py) move it into the directory that contains `regression.py` and `bodyfat.csv`
+
+The contents of your directory should look like this:
+
+```shell
+$ tree
+.
+├── regression.py
+├── bodyfat.csv
+└── test.py
+```
+
+To run the tests, do
+
+```python
+$ python3 test.py
+```
+
+Ideally, you should be running `test.py` using your terminal as this README describes. If you have an issue, first try running it that way. However, provided that `test.py`, `regression.py`, and `bodyfat.csv` are all in the same directory, it should work if you do `%run test.py` in Jupyter, or run it the same way you would run `regression.py` in your editor (VS Code, Pycharm, Sublime, etc).
+
+### These tests _do not_ check for `plot_mse`
 
 ## Disclaimer
 
