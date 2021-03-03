@@ -1,8 +1,6 @@
 # hw5-tester
 
-Tests for CS540 Spring 2021 HW5: Linear Regression 
-
-# The tester is still under development. There will be an announcement on Discord once a working version is released
+Tests for CS540 Spring 2021 HW5: Linear Regression
 
 ## Usage
 
