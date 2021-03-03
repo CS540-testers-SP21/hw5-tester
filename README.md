@@ -2,6 +2,11 @@
 
 Tests for CS540 Spring 2021 HW5: Linear Regression
 
+## Changes
+
+### V1.1
+ - test that `plot_mse` generates `mse.pdf` (can't check graph output)
+
 ## Usage
 
 Download [test.py](test.py) move it into the directory that contains `regression.py` and `bodyfat.csv`
@@ -24,7 +29,7 @@ $ python3 test.py
 
 Ideally, you should be running `test.py` using your terminal as this README describes. If you have an issue, first try running it that way. However, provided that `test.py`, `regression.py`, and `bodyfat.csv` are all in the same directory, it should work if you do `%run test.py` in Jupyter, or run it the same way you would run `regression.py` in your editor (VS Code, Pycharm, Sublime, etc).
 
-### These tests _do not_ check for `plot_mse`
+### These tests _do not_ check if `plot_mse` has a correct graph, only that it generates `mse.pdf`
 
 ## Disclaimer
 
