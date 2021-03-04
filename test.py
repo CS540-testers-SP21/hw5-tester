@@ -8,7 +8,7 @@ Their version can be found here: https://github.com/cs540-testers/hw8-tester/
 __maintainer__ = 'CS540-testers-SP21'
 __author__ = ['Nicholas Beninato']
 __credits__ = ['Harrison Clark', 'Stephen Jasina', 'Saurabh Kulkarni', 'Alex Moon']
-__version__ = '1.1'
+__version__ = '1.1.1'
 
 import unittest
 import io
@@ -196,6 +196,7 @@ class TestRegression(unittest.TestCase):
             self.assertTrue(np.allclose(np.array(l_out).mean(axis=0), np.array(l), atol=s/10))
             self.assertTrue(np.allclose(np.array(q_out).mean(axis=0), np.array(q), atol=s/10))
             self.assertTrue(np.isclose(np.array(l_out).std(axis=0).mean(), s, atol=s/10))
+            self.assertTrue(np.isclose(np.array(q_out).std(axis=0).mean(), s, atol=s/10))
 
     @timeit
     def test9_plot_mse(self):
@@ -224,7 +225,7 @@ if __name__ == '__main__':
     to_v_str = lambda x : '.'.join(map(str, x))
     if current < latest:
         print(f'A newer version of this tester (v{to_v_str(latest)}) is available. ' +
-              'You are current running v{to_v_str(current)}\n')
+              f'You are current running v{to_v_str(current)}\n')
         print('You can download the latest version at https://github.com/CS540-testers-SP21/hw5-tester\n')
     
     unittest.main(argv=sys.argv, exit=False)

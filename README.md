@@ -4,6 +4,10 @@ Tests for CS540 Spring 2021 HW5: Linear Regression
 
 ## Changes
 
+### V1.1.1
+ - check quadratic dataset std in addition to linear std
+ - current version should format correctly if out of date
+
 ### V1.1
  - test that `plot_mse` generates `mse.pdf` (can't check graph output)
 
