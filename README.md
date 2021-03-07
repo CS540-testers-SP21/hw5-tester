@@ -4,6 +4,9 @@ Tests for CS540 Spring 2021 HW5: Linear Regression
 
 ## Changes
 
+### V1.2
+ - add more tests for `synthetic_datasets`
+
 ### V1.1.1
  - check quadratic dataset std in addition to linear std
  - current version should format correctly if out of date

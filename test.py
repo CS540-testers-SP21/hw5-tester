@@ -8,7 +8,7 @@ Their version can be found here: https://github.com/cs540-testers/hw8-tester/
 __maintainer__ = 'CS540-testers-SP21'
 __author__ = ['Nicholas Beninato']
 __credits__ = ['Harrison Clark', 'Stephen Jasina', 'Saurabh Kulkarni', 'Alex Moon']
-__version__ = '1.1.1'
+__version__ = '1.2'
 
 import unittest
 import io
@@ -173,12 +173,14 @@ class TestRegression(unittest.TestCase):
 
     @timeit
     def test8_synthetic_datasets(self):
-        betas = [[0,2],[0,2],[5.5,20]]
-        alphas = [[0,1],[0,1],[-2,3]]
-        X = [[4],[4,3,2],list(range(10))]
-        sigma = [1,1,2]
-        linear_output = [[8],[8,6,4],[5.5, 25.5, 45.5, 65.5, 85.5, 105.5, 125.5, 145.5, 165.5, 185.5]]
-        quadratic_output = [[16],[16,9,4], [-2, 1, 10, 25, 46, 73, 106, 145, 190, 241]]
+        betas =  [[0,2], [0,2], [5,10], [5.5,20]]
+        alphas = [[0,1], [0,1], [3,2],  [-2,  3]]
+        X = [[4], [4,3,2], [0]*20, list(range(10))]
+        sigma = [1, 10, 100, 1000]
+        linear_output = [[8], [8,6,4], [5]*20,
+                         [5.5, 25.5, 45.5, 65.5, 85.5, 105.5, 125.5, 145.5, 165.5, 185.5]]
+        quadratic_output = [[16], [16,9,4], [3]*20,
+                            [-2, 1, 10, 25, 46, 73, 106, 145, 190, 241]]
         for b, a, x, s, l, q in zip(betas, alphas, X, sigma, linear_output, quadratic_output):
             l_out = []
             q_out = []
@@ -189,7 +191,7 @@ class TestRegression(unittest.TestCase):
             self.assertEqual(quadratic.shape, (len(x),2))
             self.assertTrue(np.allclose(linear[:,1], np.array(x).flatten()))
             self.assertTrue(np.allclose(quadratic[:,1], np.array(x).flatten()))
-            for i in range(2000):
+            for i in range(4000):
                 linear, quadratic = synthetic_datasets(np.array(b), np.array(a), np.array(x), s)
                 l_out.append(linear[:,0])
                 q_out.append(quadratic[:,0])
