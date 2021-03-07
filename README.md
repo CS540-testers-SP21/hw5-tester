@@ -34,7 +34,7 @@ To run the tests, do
 $ python3 test.py
 ```
 
-Ideally, you should be running `test.py` using your terminal as this README describes. If you have an issue, first try running it that way. However, provided that `test.py`, `regression.py`, and `bodyfat.csv` are all in the same directory, it should work if you do `%run test.py` in Jupyter, or run it the same way you would run `regression.py` in your editor (VS Code, Pycharm, Sublime, etc).
+Due to some of the tests needing to check the printed output of your function, you may have issues like `"AttributeError: '_io.TextIOWrapper' object has no attribute 'getvalue'"` if you don't run the tester in your terminal.
 
 ### These tests _do not_ check if `plot_mse` has a correct graph, only that it generates `mse.pdf`
 
