@@ -4,6 +4,10 @@ Tests for CS540 Spring 2021 HW5: Linear Regression
 
 ## Changes
 
+### V1.3
+ - display which values were used when tests fail/have errors
+ - add more tests for `print_stats`
+
 ### V1.2
  - add more tests for `synthetic_datasets`
 
