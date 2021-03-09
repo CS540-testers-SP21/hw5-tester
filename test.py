@@ -246,7 +246,7 @@ class TestRegression(unittest.TestCase):
             TestRegression.latest_test['linear noise'] = linear_noise
             TestRegression.latest_test['quadratic noise'] = quadratic_noise
             self.assertTrue(np.unique(linear_noise).shape[0] == len(l)) # all unique linear
-            self.assertTrue(np.unique(quadratic_noise).shape[0] == len(l)) # all unique quadratic
+            self.assertTrue(np.unique(quadratic_noise).shape[0] == len(q)) # all unique quadratic
             self.assertFalse(np.allclose(linear_noise, quadratic_noise)) # don't reuse noise
             del TestRegression.latest_test['linear noise']
             del TestRegression.latest_test['quadratic noise']
