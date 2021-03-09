@@ -8,7 +8,7 @@ Their version can be found here: https://github.com/cs540-testers/hw8-tester/
 __maintainer__ = 'CS540-testers-SP21'
 __author__ = ['Nicholas Beninato']
 __credits__ = ['Harrison Clark', 'Stephen Jasina', 'Saurabh Kulkarni', 'Alex Moon']
-__version__ = '1.3'
+__version__ = '1.4'
 
 import unittest
 import io
@@ -85,7 +85,8 @@ class TestRegression(unittest.TestCase):
 
         for (start, end), col, expected in zip(subsets, cols, expected_output):
             TestRegression.latest_test = {'input':{'start_index':start, 'end_index':end, 'column':col}, 
-                                          'output':'Test failed before output', 'expected':expected}
+                                          'output':'Exception/Failure before output',
+                                          'expected':expected}
 
             with CapturedOutput() as c: # get data from stdout
                 print_stats(dataset[start:end,:], col)
@@ -103,9 +104,12 @@ class TestRegression(unittest.TestCase):
 
         for c, b, expected in zip(cols, betas, expected_output):
             TestRegression.latest_test = {'input':{'columns':c, 'betas':b}, 
-                                          'output':'Test failed before output', 'expected':expected}
+                                          'output':'Exception/Failure before output',
+                                          'expected':expected}
+            
             mse = regression(dataset, cols=c, betas=b)
             TestRegression.latest_test['output'] = mse
+            
             self.assertTrue(np.isclose(mse, expected))
 
     @timeit
@@ -120,9 +124,13 @@ class TestRegression(unittest.TestCase):
         
         for c, b, expected in zip(cols, betas, expected_output):
             TestRegression.latest_test = {'input':{'columns':c, 'betas':b}, 
-                                          'output':'Test failed before output', 'expected':expected}
+                                          'output':'Exception/Failure before output',
+                                          'expected':expected}
+            
             grad_desc = gradient_descent(dataset, cols=c, betas=b)
             TestRegression.latest_test['output'] = grad_desc
+            
+            self.assertIsInstance(grad_desc, np.ndarray)
             self.assertTrue(np.allclose(grad_desc, np.array(expected)))
 
     @timeit
@@ -158,8 +166,9 @@ class TestRegression(unittest.TestCase):
 
         for col, b, t, e, expected in zip(cols, betas, T, eta, expected_output):
             TestRegression.latest_test = {'input':{'columns':col, 'betas':b, 'steps':t, 'eta':e}, 
-                                          'output':'Test failed before output', 
+                                          'output':'Exception/Failure before output', 
                                           'expected':'\n'.join(expected)}
+            
             with CapturedOutput() as c: # get data from stdout
                 iterate_gradient(dataset, cols=col, betas=b, T=t, eta=e)
             
@@ -178,7 +187,8 @@ class TestRegression(unittest.TestCase):
         
         for c, expected in zip(cols, expected_output):
             TestRegression.latest_test = {'input':{'columns':c}, 
-                                          'output':'Test failed before output', 'expected':expected}
+                                          'output':'Exception/Failure before output',
+                                          'expected':expected}
             betas = compute_betas(dataset, c)
             TestRegression.latest_test['output'] = betas
             self.assertTrue(np.allclose(np.array(expected), np.array(betas)))
@@ -193,39 +203,55 @@ class TestRegression(unittest.TestCase):
         
         for c, f, expected in zip(cols, features, expected_output):
             TestRegression.latest_test = {'input':{'columns':c, 'features':f}, 
-                                          'output':'Test failed before output', 'expected':expected}
+                                          'output':'Exception/Failure before output',
+                                          'expected':expected}
             prediction = predict(dataset, cols=c, features=f)
             TestRegression.latest_test['output'] = prediction
             self.assertTrue(np.isclose(prediction, expected))
 
     @timeit
     def test8_synthetic_datasets(self):
-        betas =  [[0,2], [0,2], [5,10], [5.5,20]]
-        alphas = [[0,1], [0,1], [3,2],  [-2,  3]]
-        X = [[4], [4,3,2], [0]*20, list(range(10))]
-        sigma = [1, 10, 100, 1000]
+        betas =  [[0,2], [0,2], [5,10], [5.5,20], [0, 0]]
+        alphas = [[0,1], [0,1], [3,2],  [-2,  3], [0, 0]]
+        X = [[4], [4,3,2], [0]*20, list(range(10)), list(range(1000,10000,100))]
+        sigma = [1, 10, 100, 1000, 1e9]
         linear_output = [[8], [8,6,4], [5]*20,
-                         [5.5, 25.5, 45.5, 65.5, 85.5, 105.5, 125.5, 145.5, 165.5, 185.5]]
+                         [5.5, 25.5, 45.5, 65.5, 85.5, 105.5, 125.5, 145.5, 165.5, 185.5],
+                         [0]*90]
         quadratic_output = [[16], [16,9,4], [3]*20,
-                            [-2, 1, 10, 25, 46, 73, 106, 145, 190, 241]]
+                            [-2, 1, 10, 25, 46, 73, 106, 145, 190, 241],
+                            [0]*90]
 
         for b, a, x, s, l, q in zip(betas, alphas, X, sigma, linear_output, quadratic_output):
             x = list(map(lambda v:[v], x)) # make each value of x a list
             TestRegression.latest_test = {'input':{'betas':b, 'alphas':a, 'X':x, 'sigma':s}, 
-                                          'linear mean output':'Test failed before output', 
-                                          'linear std output':'Test failed before output', 
-                                          'linear expected (without noise)':l,
-                                          'quadratic mean output':'Test failed before output',
-                                          'quadratic std output':'Test failed before output',
-                                          'quadratic expected (without noise)': q}
+                                          'linear expected (ignoring noise and x values)':l,
+                                          'quadratic expected (ignoring noise and x values)': q,
+                                          'output':'Exception/Failure before output'}
             linear, quadratic = synthetic_datasets(np.array(b), np.array(a), np.array(x), s)
 
+            TestRegression.latest_test['linear output'] = linear
+            TestRegression.latest_test['quadratic output'] = quadratic
+            del TestRegression.latest_test['output']
+
+            self.assertIsInstance(linear, np.ndarray)
+            self.assertIsInstance(quadratic, np.ndarray)
             self.assertEqual(linear.shape, (len(x),2)) # n x 2 shape, col 1 should be x values
             self.assertEqual(quadratic.shape, (len(x),2))
             self.assertTrue(np.allclose(linear[:,1], np.array(x).flatten()))
             self.assertTrue(np.allclose(quadratic[:,1], np.array(x).flatten()))
 
-            iterations = 4000
+            linear_noise = linear[:,0] - np.array(l) # use different random values
+            quadratic_noise = quadratic[:,0] - np.array(q)
+            TestRegression.latest_test['linear noise'] = linear_noise
+            TestRegression.latest_test['quadratic noise'] = quadratic_noise
+            self.assertTrue(np.unique(linear_noise).shape[0] == len(l)) # all unique linear
+            self.assertTrue(np.unique(quadratic_noise).shape[0] == len(l)) # all unique quadratic
+            self.assertFalse(np.allclose(linear_noise, quadratic_noise)) # don't reuse noise
+            del TestRegression.latest_test['linear noise']
+            del TestRegression.latest_test['quadratic noise']
+
+            iterations = 6000
             linear_values = np.empty((iterations, len(x)))
             quadratic_values = np.empty((iterations, len(x)))
             for i in range(iterations): # many samples to find mean and standard deviation
@@ -233,14 +259,21 @@ class TestRegression(unittest.TestCase):
                 linear_values[i] = linear[:,0]
                 quadratic_values[i] = quadratic[:,0]
 
-            TestRegression.latest_test['linear mean output'] = np.array(linear_values).mean(axis=0)
-            TestRegression.latest_test['quadratic mean output'] = np.array(quadratic_values).mean(axis=0)
-            TestRegression.latest_test['linear std output'] = np.array(linear_values).std(axis=0).mean()
-            TestRegression.latest_test['quadratic std output'] = np.array(quadratic_values).std(axis=0).mean()
-            self.assertTrue(np.allclose(np.array(linear_values).mean(axis=0), np.array(l), atol=s/10))
-            self.assertTrue(np.allclose(np.array(quadratic_values).mean(axis=0), np.array(q), atol=s/10))
-            self.assertTrue(np.isclose(np.array(linear_values).std(axis=0).mean(), s, atol=s/10))
-            self.assertTrue(np.isclose(np.array(quadratic_values).std(axis=0).mean(), s, atol=s/10))
+            linear_mean = np.array(linear_values).mean(axis=0)
+            quadratic_mean = np.array(quadratic_values).mean(axis=0)
+            linear_std = np.array(linear_values).std(axis=0).mean()
+            quadratic_std = np.array(quadratic_values).std(axis=0).mean()
+            TestRegression.latest_test['linear mean output'] = linear_mean
+            TestRegression.latest_test['quadratic mean output'] = quadratic_mean
+            TestRegression.latest_test['linear std output'] = linear_std
+            TestRegression.latest_test['quadratic std output'] = quadratic_std
+            del TestRegression.latest_test['linear output']
+            del TestRegression.latest_test['quadratic output']
+
+            self.assertTrue(np.allclose(linear_mean, np.array(l), atol=s/10))
+            self.assertTrue(np.allclose(quadratic_mean, np.array(q), atol=s/10))
+            self.assertTrue(np.isclose(linear_std, s, atol=s/10))
+            self.assertTrue(np.isclose(quadratic_std, s, atol=s/10))
 
     @timeit
     def test9_plot_mse(self):
